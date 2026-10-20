@@ -1,0 +1,34 @@
+[
+  {
+    "id": "prompt",
+    "name": "提示词策划服务",
+    "role": "prompt",
+    "base_url_env": "PROMPT_BASE_URL",
+    "api_key_env": "PROMPT_API_KEY",
+    "model_env": "PROMPT_MODEL"
+  },
+  {
+    "id": "writer",
+    "name": "正文写作服务",
+    "role": "writer",
+    "base_url_env": "LLM_BASE_URL",
+    "api_key_env": "LLM_API_KEY",
+    "model_env": "LLM_MODEL"
+  },
+  {
+    "id": "review",
+    "name": "独立审核服务",
+    "role": "review",
+    "base_url_env": "REVIEW_BASE_URL",
+    "api_key_env": "REVIEW_API_KEY",
+    "model_env": "REVIEW_MODEL"
+  },
+  {
+    "id": "visual",
+    "name": "插图与排版服务",
+    "role": "visual",
+    "base_url_env": "VISUAL_BASE_URL",
+    "api_key_env": "VISUAL_API_KEY",
+    "model_env": "VISUAL_MODEL"
+  }
+]

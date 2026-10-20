@@ -1,0 +1,34 @@
+# Credentials and local runtime data
+.env
+.env.*
+!.env.example
+data/
+runtime-settings.json
+admin-token.txt
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.log
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Environments, caches and generated packages
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.coverage
+htmlcov/
+.ruff_cache/
+node_modules/
+dist/
+build/
+*.egg-info/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,2235 @@
+{
+  "$defs": {
+    "Angle": {
+      "additionalProperties": false,
+      "properties": {
+        "selected": {
+          "title": "Selected",
+          "type": "string"
+        },
+        "reader_value": {
+          "title": "Reader Value",
+          "type": "string"
+        },
+        "alternatives": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 4,
+          "minItems": 2,
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "outline": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "title": "Outline",
+          "type": "array"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "selected",
+        "reader_value",
+        "alternatives",
+        "outline",
+        "reason"
+      ],
+      "title": "Angle",
+      "type": "object"
+    },
+    "Article": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "digest": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Digest",
+          "type": "string"
+        },
+        "markdown": {
+          "minLength": 80,
+          "title": "Markdown",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "digest",
+        "markdown"
+      ],
+      "title": "Article",
+      "type": "object"
+    },
+    "ArticlePlan": {
+      "additionalProperties": false,
+      "properties": {
+        "story_mode": {
+          "enum": [
+            "breaking",
+            "explainer",
+            "brief"
+          ],
+          "title": "Story Mode",
+          "type": "string"
+        },
+        "target_chars": {
+          "maximum": 12000,
+          "minimum": 600,
+          "title": "Target Chars",
+          "type": "integer"
+        },
+        "angle": {
+          "$ref": "#/$defs/Angle"
+        },
+        "headline_candidates": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Headline Candidates",
+          "type": "array"
+        },
+        "hook": {
+          "title": "Hook",
+          "type": "string"
+        },
+        "narrative_beats": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 2,
+          "title": "Narrative Beats",
+          "type": "array"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "writing_prompt": {
+          "$ref": "#/$defs/ArticleWritingPrompt"
+        },
+        "illustrations": {
+          "items": {
+            "$ref": "#/$defs/IllustrationBrief"
+          },
+          "maxItems": 6,
+          "title": "Illustrations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "story_mode",
+        "target_chars",
+        "angle",
+        "headline_candidates",
+        "hook",
+        "narrative_beats",
+        "reason",
+        "writing_prompt"
+      ],
+      "title": "ArticlePlan",
+      "type": "object"
+    },
+    "ArticleWritingPrompt": {
+      "additionalProperties": false,
+      "properties": {
+        "system_prompt": {
+          "maxLength": 10000,
+          "minLength": 50,
+          "title": "System Prompt",
+          "type": "string"
+        },
+        "user_prompt": {
+          "maxLength": 16000,
+          "minLength": 50,
+          "title": "User Prompt",
+          "type": "string"
+        },
+        "style_checklist": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "minItems": 2,
+          "title": "Style Checklist",
+          "type": "array"
+        },
+        "evidence_rules": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "minItems": 2,
+          "title": "Evidence Rules",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system_prompt",
+        "user_prompt"
+      ],
+      "title": "ArticleWritingPrompt",
+      "type": "object"
+    },
+    "AutonomousPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "story_mode": {
+          "default": "explainer",
+          "enum": [
+            "breaking",
+            "explainer"
+          ],
+          "title": "Story Mode",
+          "type": "string"
+        },
+        "headline_candidates": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 4,
+          "title": "Headline Candidates",
+          "type": "array"
+        },
+        "narrative_beats": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 7,
+          "title": "Narrative Beats",
+          "type": "array"
+        },
+        "angle": {
+          "$ref": "#/$defs/Angle"
+        },
+        "headline_strategy": {
+          "minLength": 1,
+          "title": "Headline Strategy",
+          "type": "string"
+        },
+        "hook": {
+          "minLength": 1,
+          "title": "Hook",
+          "type": "string"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sections": {
+          "items": {
+            "$ref": "#/$defs/AutonomousSection"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Sections",
+          "type": "array"
+        }
+      },
+      "required": [
+        "angle",
+        "headline_strategy",
+        "hook",
+        "reason",
+        "sections"
+      ],
+      "title": "AutonomousPlan",
+      "type": "object"
+    },
+    "AutonomousSection": {
+      "additionalProperties": false,
+      "properties": {
+        "role_name": {
+          "maxLength": 40,
+          "minLength": 1,
+          "title": "Role Name",
+          "type": "string"
+        },
+        "voice": {
+          "maxLength": 2000,
+          "minLength": 5,
+          "title": "Voice",
+          "type": "string"
+        },
+        "content_type": {
+          "enum": [
+            "news",
+            "commentary"
+          ],
+          "title": "Content Type",
+          "type": "string"
+        },
+        "heading": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Heading",
+          "type": "string"
+        },
+        "focus": {
+          "minLength": 1,
+          "title": "Focus",
+          "type": "string"
+        },
+        "writing_prompt": {
+          "$ref": "#/$defs/WritingPrompt"
+        }
+      },
+      "required": [
+        "role_name",
+        "voice",
+        "content_type",
+        "heading",
+        "focus",
+        "writing_prompt"
+      ],
+      "title": "AutonomousSection",
+      "type": "object"
+    },
+    "BatchDraftRequest": {
+      "properties": {
+        "confirmed": {
+          "default": false,
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "title": "BatchDraftRequest",
+      "type": "object"
+    },
+    "CandidateScore": {
+      "additionalProperties": false,
+      "properties": {
+        "story_id": {
+          "title": "Story Id",
+          "type": "string"
+        },
+        "score": {
+          "$ref": "#/$defs/Score"
+        }
+      },
+      "required": [
+        "story_id",
+        "score"
+      ],
+      "title": "CandidateScore",
+      "type": "object"
+    },
+    "CapabilityResult": {
+      "additionalProperties": false,
+      "properties": {
+        "checked_at": {
+          "title": "Checked At",
+          "type": "string"
+        },
+        "appid_masked": {
+          "title": "Appid Masked",
+          "type": "string"
+        },
+        "checks": {
+          "additionalProperties": true,
+          "title": "Checks",
+          "type": "object"
+        },
+        "publish_available": {
+          "title": "Publish Available",
+          "type": "boolean"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "checked_at",
+        "appid_masked",
+        "checks",
+        "publish_available",
+        "summary"
+      ],
+      "title": "CapabilityResult",
+      "type": "object"
+    },
+    "ComposeRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "editor_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Editor Id"
+        },
+        "custom_style": {
+          "default": "",
+          "maxLength": 4000,
+          "title": "Custom Style",
+          "type": "string"
+        },
+        "format": {
+          "anyOf": [
+            {
+              "enum": [
+                "news",
+                "commentary"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Format"
+        },
+        "story_id": {
+          "title": "Story Id",
+          "type": "string"
+        },
+        "draft_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draft Id"
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Revision"
+        }
+      },
+      "required": [
+        "story_id"
+      ],
+      "title": "ComposeRequest",
+      "type": "object"
+    },
+    "ControlRequest": {
+      "properties": {
+        "action": {
+          "enum": [
+            "pause",
+            "resume",
+            "cancel"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "job_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Job Id"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "title": "ControlRequest",
+      "type": "object"
+    },
+    "Crosscheck": {
+      "additionalProperties": false,
+      "properties": {
+        "anchor_relationship": {
+          "default": "unknown",
+          "enum": [
+            "primary_material",
+            "original_reporting",
+            "announcement_rewrite",
+            "syndicated",
+            "unknown"
+          ],
+          "title": "Anchor Relationship",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceComparison"
+          },
+          "maxItems": 4,
+          "title": "Sources",
+          "type": "array"
+        },
+        "summary": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sources",
+        "summary"
+      ],
+      "title": "Crosscheck",
+      "type": "object"
+    },
+    "DecisionRequest": {
+      "properties": {
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "reviewer": {
+          "default": "",
+          "maxLength": 80,
+          "title": "Reviewer",
+          "type": "string"
+        },
+        "confirmed": {
+          "default": false,
+          "title": "Confirmed",
+          "type": "boolean"
+        },
+        "note": {
+          "default": "人工退回，请修改后重新审核",
+          "maxLength": 2000,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "revision"
+      ],
+      "title": "DecisionRequest",
+      "type": "object"
+    },
+    "DesktopLoginRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "ticket": {
+          "maxLength": 256,
+          "minLength": 32,
+          "title": "Ticket",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ticket"
+      ],
+      "title": "DesktopLoginRequest",
+      "type": "object"
+    },
+    "DesktopLoginResponse": {
+      "properties": {
+        "token": {
+          "title": "Token",
+          "type": "string"
+        }
+      },
+      "required": [
+        "token"
+      ],
+      "title": "DesktopLoginResponse",
+      "type": "object"
+    },
+    "DesktopTicketResponse": {
+      "properties": {
+        "ticket": {
+          "title": "Ticket",
+          "type": "string"
+        },
+        "expires_in": {
+          "title": "Expires In",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "ticket",
+        "expires_in"
+      ],
+      "title": "DesktopTicketResponse",
+      "type": "object"
+    },
+    "EditRequest": {
+      "properties": {
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "article": {
+          "$ref": "#/$defs/Article"
+        }
+      },
+      "required": [
+        "revision",
+        "article"
+      ],
+      "title": "EditRequest",
+      "type": "object"
+    },
+    "Editor": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_-]{0,39}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 40,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "style_name": {
+          "maxLength": 60,
+          "minLength": 1,
+          "title": "Style Name",
+          "type": "string"
+        },
+        "instructions": {
+          "maxLength": 4000,
+          "minLength": 10,
+          "title": "Instructions",
+          "type": "string"
+        },
+        "prompt_profile": {
+          "default": "prompt",
+          "title": "Prompt Profile",
+          "type": "string"
+        },
+        "writer_profile": {
+          "default": "writer",
+          "title": "Writer Profile",
+          "type": "string"
+        },
+        "prompt_model": {
+          "default": "",
+          "maxLength": 200,
+          "title": "Prompt Model",
+          "type": "string"
+        },
+        "writer_model": {
+          "default": "",
+          "maxLength": 200,
+          "title": "Writer Model",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "style_name",
+        "instructions"
+      ],
+      "title": "Editor",
+      "type": "object"
+    },
+    "EditorialPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sections": {
+          "items": {
+            "$ref": "#/$defs/EditorialSection"
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "title": "Sections",
+          "type": "array"
+        }
+      },
+      "required": [
+        "reason",
+        "sections"
+      ],
+      "title": "EditorialPlan",
+      "type": "object"
+    },
+    "EditorialSection": {
+      "additionalProperties": false,
+      "properties": {
+        "editor_id": {
+          "enum": [
+            "flash",
+            "rigor",
+            "common"
+          ],
+          "title": "Editor Id",
+          "type": "string"
+        },
+        "heading": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Heading",
+          "type": "string"
+        },
+        "focus": {
+          "minLength": 1,
+          "title": "Focus",
+          "type": "string"
+        }
+      },
+      "required": [
+        "editor_id",
+        "heading",
+        "focus"
+      ],
+      "title": "EditorialSection",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "facts": {
+          "items": {
+            "$ref": "#/$defs/Fact"
+          },
+          "maxItems": 24,
+          "minItems": 1,
+          "title": "Facts",
+          "type": "array"
+        },
+        "uncertainties": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Uncertainties",
+          "type": "array"
+        }
+      },
+      "required": [
+        "summary",
+        "facts",
+        "uncertainties"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Fact": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^F[1-9][0-9]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        },
+        "quote": {
+          "minLength": 8,
+          "title": "Quote",
+          "type": "string"
+        },
+        "claim_type": {
+          "default": "unknown",
+          "enum": [
+            "reported_release",
+            "vendor_claim",
+            "research_result",
+            "independently_verified",
+            "unknown"
+          ],
+          "title": "Claim Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "source_url",
+        "quote"
+      ],
+      "title": "Fact",
+      "type": "object"
+    },
+    "FactComparison": {
+      "additionalProperties": false,
+      "properties": {
+        "fact_id": {
+          "pattern": "^F[1-9][0-9]*$",
+          "title": "Fact Id",
+          "type": "string"
+        },
+        "judgment": {
+          "enum": [
+            "supports",
+            "contradicts",
+            "different_scope",
+            "not_mentioned"
+          ],
+          "title": "Judgment",
+          "type": "string"
+        },
+        "quote": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Quote",
+          "type": "string"
+        },
+        "explanation": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Explanation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fact_id",
+        "judgment",
+        "explanation"
+      ],
+      "title": "FactComparison",
+      "type": "object"
+    },
+    "IllustrationBrief": {
+      "additionalProperties": false,
+      "description": "整篇策划里的一条概念插画要求；不是新闻现场照片。",
+      "properties": {
+        "purpose": {
+          "maxLength": 200,
+          "minLength": 4,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "section_hint": {
+          "default": "",
+          "maxLength": 80,
+          "title": "Section Hint",
+          "type": "string"
+        },
+        "prompt": {
+          "maxLength": 600,
+          "minLength": 20,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "fact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 4,
+          "title": "Fact Ids",
+          "type": "array"
+        },
+        "category": {
+          "default": "concept",
+          "enum": [
+            "concept",
+            "diagram",
+            "metaphor"
+          ],
+          "title": "Category",
+          "type": "string"
+        }
+      },
+      "required": [
+        "purpose",
+        "prompt"
+      ],
+      "title": "IllustrationBrief",
+      "type": "object"
+    },
+    "ImageGenerationPatch": {
+      "additionalProperties": false,
+      "properties": {
+        "base_url": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Url"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "api_key": {
+          "anyOf": [
+            {
+              "format": "password",
+              "maxLength": 4096,
+              "type": "string",
+              "writeOnly": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Api Key"
+        },
+        "clear_api_key": {
+          "default": false,
+          "title": "Clear Api Key",
+          "type": "boolean"
+        },
+        "proxy_url": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proxy Url"
+        },
+        "enabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Enabled"
+        },
+        "provider": {
+          "anyOf": [
+            {
+              "enum": [
+                "auto",
+                "openai_compatible",
+                "minimax"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Provider"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "pattern": "^(?:auto|[1-9][0-9]{2,3}x[1-9][0-9]{2,3})$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        }
+      },
+      "title": "ImageGenerationPatch",
+      "type": "object"
+    },
+    "Issue": {
+      "additionalProperties": false,
+      "properties": {
+        "severity": {
+          "enum": [
+            "blocker",
+            "major",
+            "minor"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "category": {
+          "title": "Category",
+          "type": "string"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "suggestion": {
+          "title": "Suggestion",
+          "type": "string"
+        }
+      },
+      "required": [
+        "severity",
+        "category",
+        "detail",
+        "suggestion"
+      ],
+      "title": "Issue",
+      "type": "object"
+    },
+    "ModelConfigPatch": {
+      "additionalProperties": false,
+      "properties": {
+        "base_url": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Url"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "api_key": {
+          "anyOf": [
+            {
+              "format": "password",
+              "maxLength": 4096,
+              "type": "string",
+              "writeOnly": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Api Key"
+        },
+        "clear_api_key": {
+          "default": false,
+          "title": "Clear Api Key",
+          "type": "boolean"
+        },
+        "proxy_url": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proxy Url"
+        }
+      },
+      "title": "ModelConfigPatch",
+      "type": "object"
+    },
+    "ModelTestResult": {
+      "properties": {
+        "ok": {
+          "title": "Ok",
+          "type": "boolean"
+        },
+        "profile": {
+          "enum": [
+            "writer",
+            "prompt",
+            "review",
+            "visual"
+          ],
+          "title": "Profile",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "route": {
+          "enum": [
+            "direct",
+            "proxy"
+          ],
+          "title": "Route",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ok",
+        "profile",
+        "message",
+        "route"
+      ],
+      "title": "ModelTestResult",
+      "type": "object"
+    },
+    "ModelsPatch": {
+      "additionalProperties": false,
+      "properties": {
+        "writer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ModelConfigPatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "prompt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ModelConfigPatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ModelConfigPatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "visual": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ModelConfigPatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "ModelsPatch",
+      "type": "object"
+    },
+    "PreparedArticle": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "plan": {
+          "$ref": "#/$defs/ArticlePlan"
+        }
+      },
+      "required": [
+        "evidence",
+        "plan"
+      ],
+      "title": "PreparedArticle",
+      "type": "object"
+    },
+    "PublicationAction": {
+      "additionalProperties": false,
+      "properties": {
+        "confirmed": {
+          "default": false,
+          "title": "Confirmed",
+          "type": "boolean"
+        },
+        "note": {
+          "default": "",
+          "maxLength": 200,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "title": "PublicationAction",
+      "type": "object"
+    },
+    "PublicationRequest": {
+      "properties": {
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "url": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "reviewer": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Reviewer",
+          "type": "string"
+        }
+      },
+      "required": [
+        "revision",
+        "url",
+        "reviewer"
+      ],
+      "title": "PublicationRequest",
+      "type": "object"
+    },
+    "PublishConfigPatch": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Enabled"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "manual",
+                "draft",
+                "auto"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mode"
+        },
+        "auto_approve": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Auto Approve"
+        },
+        "author": {
+          "anyOf": [
+            {
+              "maxLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author"
+        },
+        "cover_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "auto",
+                "manual",
+                "generated"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cover Mode"
+        },
+        "cover_media_id": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cover Media Id"
+        },
+        "cover_path": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cover Path"
+        },
+        "need_open_comment": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Need Open Comment"
+        },
+        "only_fans_can_comment": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Only Fans Can Comment"
+        }
+      },
+      "title": "PublishConfigPatch",
+      "type": "object"
+    },
+    "PublishRequest": {
+      "properties": {
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "confirmed": {
+          "default": false,
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "revision"
+      ],
+      "title": "PublishRequest",
+      "type": "object"
+    },
+    "Review": {
+      "additionalProperties": false,
+      "properties": {
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "score": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "issues": {
+          "items": {
+            "$ref": "#/$defs/Issue"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "passed",
+        "score",
+        "issues",
+        "summary"
+      ],
+      "title": "Review",
+      "type": "object"
+    },
+    "RuntimeConfigPatch": {
+      "additionalProperties": false,
+      "properties": {
+        "merged_preparation": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Merged Preparation"
+        },
+        "image_generation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ImageGenerationPatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "fast_mode": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fast Mode"
+        },
+        "editorial_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "auto",
+                "manual"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Editorial Mode"
+        },
+        "review_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "off",
+                "advisory",
+                "strict"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Review Mode"
+        },
+        "demo": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Demo"
+        },
+        "json_mode": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Json Mode"
+        },
+        "max_output_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Output Tokens"
+        },
+        "models": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ModelsPatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "wechat": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WechatConfigPatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "news_proxy_url": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "News Proxy Url"
+        }
+      },
+      "title": "RuntimeConfigPatch",
+      "type": "object"
+    },
+    "SchedulePlan": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "mode": {
+          "default": "daily",
+          "enum": [
+            "daily",
+            "interval"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "times": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "minItems": 1,
+          "title": "Times",
+          "type": "array"
+        },
+        "interval_minutes": {
+          "default": 30,
+          "maximum": 1440,
+          "minimum": 5,
+          "title": "Interval Minutes",
+          "type": "integer"
+        }
+      },
+      "title": "SchedulePlan",
+      "type": "object"
+    },
+    "Score": {
+      "additionalProperties": false,
+      "properties": {
+        "relevance": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Relevance",
+          "type": "number"
+        },
+        "impact": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Impact",
+          "type": "number"
+        },
+        "novelty": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Novelty",
+          "type": "number"
+        },
+        "timeliness": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Timeliness",
+          "type": "number"
+        },
+        "reliability": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Reliability",
+          "type": "number"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "relevance",
+        "impact",
+        "novelty",
+        "timeliness",
+        "reliability",
+        "reason"
+      ],
+      "title": "Score",
+      "type": "object"
+    },
+    "ScoreBatch": {
+      "additionalProperties": false,
+      "properties": {
+        "scores": {
+          "items": {
+            "$ref": "#/$defs/CandidateScore"
+          },
+          "maxItems": 50,
+          "minItems": 1,
+          "title": "Scores",
+          "type": "array"
+        }
+      },
+      "required": [
+        "scores"
+      ],
+      "title": "ScoreBatch",
+      "type": "object"
+    },
+    "SourceComparison": {
+      "additionalProperties": false,
+      "properties": {
+        "story_id": {
+          "title": "Story Id",
+          "type": "string"
+        },
+        "same_event": {
+          "title": "Same Event",
+          "type": "boolean"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "relationship": {
+          "enum": [
+            "primary_material",
+            "original_reporting",
+            "announcement_rewrite",
+            "syndicated",
+            "unknown"
+          ],
+          "title": "Relationship",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "comparisons": {
+          "items": {
+            "$ref": "#/$defs/FactComparison"
+          },
+          "maxItems": 24,
+          "title": "Comparisons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "story_id",
+        "same_event",
+        "confidence",
+        "relationship",
+        "reason",
+        "comparisons"
+      ],
+      "title": "SourceComparison",
+      "type": "object"
+    },
+    "SourceImagePlacement": {
+      "additionalProperties": false,
+      "properties": {
+        "image_id": {
+          "title": "Image Id",
+          "type": "string"
+        },
+        "after_heading": {
+          "default": "",
+          "title": "After Heading",
+          "type": "string"
+        },
+        "after_text": {
+          "default": "",
+          "maxLength": 160,
+          "title": "After Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "image_id"
+      ],
+      "title": "SourceImagePlacement",
+      "type": "object"
+    },
+    "UsagePreferences": {
+      "properties": {
+        "run_alert_tokens": {
+          "default": 50000,
+          "maximum": 1000000000,
+          "minimum": 0,
+          "title": "Run Alert Tokens",
+          "type": "integer"
+        }
+      },
+      "title": "UsagePreferences",
+      "type": "object"
+    },
+    "VisualCard": {
+      "additionalProperties": false,
+      "properties": {
+        "after_heading": {
+          "default": "",
+          "title": "After Heading",
+          "type": "string"
+        },
+        "after_text": {
+          "default": "",
+          "maxLength": 160,
+          "title": "After Text",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 60,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "fact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "title": "Fact Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "title",
+        "fact_ids"
+      ],
+      "title": "VisualCard",
+      "type": "object"
+    },
+    "VisualPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "theme": {
+          "default": "indigo",
+          "enum": [
+            "indigo",
+            "red",
+            "green"
+          ],
+          "title": "Theme",
+          "type": "string"
+        },
+        "reason": {
+          "default": "",
+          "title": "Reason",
+          "type": "string"
+        },
+        "cards": {
+          "items": {
+            "$ref": "#/$defs/VisualCard"
+          },
+          "maxItems": 5,
+          "title": "Cards",
+          "type": "array"
+        },
+        "images": {
+          "items": {
+            "$ref": "#/$defs/SourceImagePlacement"
+          },
+          "maxItems": 10,
+          "title": "Images",
+          "type": "array"
+        },
+        "reference_image_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Reference Image Ids",
+          "type": "array"
+        }
+      },
+      "title": "VisualPlan",
+      "type": "object"
+    },
+    "WechatConfigPatch": {
+      "additionalProperties": false,
+      "properties": {
+        "app_id": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "App Id"
+        },
+        "app_secret": {
+          "anyOf": [
+            {
+              "format": "password",
+              "maxLength": 4096,
+              "type": "string",
+              "writeOnly": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "App Secret"
+        },
+        "clear_app_secret": {
+          "default": false,
+          "title": "Clear App Secret",
+          "type": "boolean"
+        }
+      },
+      "title": "WechatConfigPatch",
+      "type": "object"
+    },
+    "WechatConnectionStatus": {
+      "properties": {
+        "configured": {
+          "title": "Configured",
+          "type": "boolean"
+        },
+        "appid_masked": {
+          "title": "Appid Masked",
+          "type": "string"
+        },
+        "secret_configured": {
+          "title": "Secret Configured",
+          "type": "boolean"
+        },
+        "testing": {
+          "title": "Testing",
+          "type": "boolean"
+        },
+        "last_test": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WechatTestResult"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "configured",
+        "appid_masked",
+        "secret_configured",
+        "testing"
+      ],
+      "title": "WechatConnectionStatus",
+      "type": "object"
+    },
+    "WechatTestResult": {
+      "properties": {
+        "ok": {
+          "title": "Ok",
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "success",
+            "not_configured",
+            "network_error",
+            "http_error",
+            "wechat_error",
+            "invalid_response"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "checked_at": {
+          "title": "Checked At",
+          "type": "string"
+        },
+        "duration_ms": {
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "expires_in": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires In"
+        },
+        "wechat_errcode": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wechat Errcode"
+        },
+        "http_status": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Http Status"
+        },
+        "failure_stage": {
+          "anyOf": [
+            {
+              "enum": [
+                "dns",
+                "tls",
+                "timeout",
+                "connect",
+                "request"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Failure Stage"
+        },
+        "whitelist_ip": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Whitelist Ip"
+        }
+      },
+      "required": [
+        "ok",
+        "status",
+        "checked_at",
+        "duration_ms",
+        "message"
+      ],
+      "title": "WechatTestResult",
+      "type": "object"
+    },
+    "WritingChoice": {
+      "additionalProperties": false,
+      "properties": {
+        "editor_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Editor Id"
+        },
+        "custom_style": {
+          "default": "",
+          "maxLength": 4000,
+          "title": "Custom Style",
+          "type": "string"
+        },
+        "format": {
+          "anyOf": [
+            {
+              "enum": [
+                "news",
+                "commentary"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Format"
+        }
+      },
+      "title": "WritingChoice",
+      "type": "object"
+    },
+    "WritingPrompt": {
+      "additionalProperties": false,
+      "properties": {
+        "system_prompt": {
+          "maxLength": 10000,
+          "minLength": 50,
+          "title": "System Prompt",
+          "type": "string"
+        },
+        "user_prompt": {
+          "maxLength": 16000,
+          "minLength": 50,
+          "title": "User Prompt",
+          "type": "string"
+        },
+        "style_checklist": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "minItems": 2,
+          "title": "Style Checklist",
+          "type": "array"
+        },
+        "evidence_rules": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "minItems": 2,
+          "title": "Evidence Rules",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system_prompt",
+        "user_prompt",
+        "style_checklist",
+        "evidence_rules"
+      ],
+      "title": "WritingPrompt",
+      "type": "object"
+    }
+  },
+  "title": "AI Newsroom request and model-output schemas",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "x-roots": {
+    "ComposeRequest": {
+      "$ref": "#/$defs/ComposeRequest"
+    },
+    "DecisionRequest": {
+      "$ref": "#/$defs/DecisionRequest"
+    },
+    "EditRequest": {
+      "$ref": "#/$defs/EditRequest"
+    },
+    "PublicationRequest": {
+      "$ref": "#/$defs/PublicationRequest"
+    },
+    "Editor": {
+      "$ref": "#/$defs/Editor"
+    },
+    "WritingChoice": {
+      "$ref": "#/$defs/WritingChoice"
+    },
+    "SchedulePlan": {
+      "$ref": "#/$defs/SchedulePlan"
+    },
+    "Article": {
+      "$ref": "#/$defs/Article"
+    },
+    "Evidence": {
+      "$ref": "#/$defs/Evidence"
+    },
+    "Angle": {
+      "$ref": "#/$defs/Angle"
+    },
+    "Score": {
+      "$ref": "#/$defs/Score"
+    },
+    "Review": {
+      "$ref": "#/$defs/Review"
+    },
+    "WritingPrompt": {
+      "$ref": "#/$defs/WritingPrompt"
+    },
+    "Crosscheck": {
+      "$ref": "#/$defs/Crosscheck"
+    },
+    "EditorialPlan": {
+      "$ref": "#/$defs/EditorialPlan"
+    },
+    "VisualPlan": {
+      "$ref": "#/$defs/VisualPlan"
+    },
+    "AutonomousPlan": {
+      "$ref": "#/$defs/AutonomousPlan"
+    },
+    "ArticlePlan": {
+      "$ref": "#/$defs/ArticlePlan"
+    },
+    "ScoreBatch": {
+      "$ref": "#/$defs/ScoreBatch"
+    },
+    "WechatConnectionStatus": {
+      "$ref": "#/$defs/WechatConnectionStatus"
+    },
+    "WechatTestResult": {
+      "$ref": "#/$defs/WechatTestResult"
+    },
+    "DesktopLoginRequest": {
+      "$ref": "#/$defs/DesktopLoginRequest"
+    },
+    "DesktopLoginResponse": {
+      "$ref": "#/$defs/DesktopLoginResponse"
+    },
+    "DesktopTicketResponse": {
+      "$ref": "#/$defs/DesktopTicketResponse"
+    },
+    "RuntimeConfigPatch": {
+      "$ref": "#/$defs/RuntimeConfigPatch"
+    },
+    "ModelTestResult": {
+      "$ref": "#/$defs/ModelTestResult"
+    },
+    "PublishRequest": {
+      "$ref": "#/$defs/PublishRequest"
+    },
+    "PublishConfigPatch": {
+      "$ref": "#/$defs/PublishConfigPatch"
+    },
+    "PublicationAction": {
+      "$ref": "#/$defs/PublicationAction"
+    },
+    "CapabilityResult": {
+      "$ref": "#/$defs/CapabilityResult"
+    },
+    "ControlRequest": {
+      "$ref": "#/$defs/ControlRequest"
+    },
+    "UsagePreferences": {
+      "$ref": "#/$defs/UsagePreferences"
+    },
+    "BatchDraftRequest": {
+      "$ref": "#/$defs/BatchDraftRequest"
+    },
+    "PreparedArticle": {
+      "$ref": "#/$defs/PreparedArticle"
+    },
+    "ImageGenerationPatch": {
+      "$ref": "#/$defs/ImageGenerationPatch"
+    }
+  }
+}

@@ -1,0 +1,709 @@
+[
+  {
+    "id": "google-research",
+    "name": "Google Research",
+    "url": "https://research.google/blog/rss/",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "Google",
+    "allowed_hosts": [
+      "research.google"
+    ],
+    "article_prefixes": [
+      "/blog/"
+    ],
+    "enabled": true,
+    "evidence_note": "官方研究介绍；结论归属于研究团队，非独立效果验证。"
+  },
+  {
+    "id": "google-deepmind",
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/rss.xml",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "Google",
+    "allowed_hosts": [
+      "deepmind.google"
+    ],
+    "article_prefixes": [
+      "/blog/"
+    ],
+    "enabled": true,
+    "evidence_note": "厂商一手发布；性能数字须保留评测条件并标注厂商报告。"
+  },
+  {
+    "id": "microsoft-research",
+    "name": "Microsoft Research",
+    "url": "https://www.microsoft.com/en-us/research/feed/",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "Microsoft",
+    "allowed_hosts": [
+      "www.microsoft.com",
+      "microsoft.com"
+    ],
+    "article_prefixes": [
+      "/en-us/research/"
+    ],
+    "enabled": true,
+    "evidence_note": "机构一手研究介绍；不自动等同于第三方验证。"
+  },
+  {
+    "id": "huggingface-blog",
+    "name": "Hugging Face 博客（含社区文章）",
+    "url": "https://huggingface.co/blog/feed.xml",
+    "kind": "community",
+    "tier": "discovery",
+    "organization": "Hugging Face / 社区作者",
+    "allowed_hosts": [
+      "huggingface.co"
+    ],
+    "article_prefixes": [
+      "/blog/"
+    ],
+    "enabled": true,
+    "evidence_note": "仅发现线索；平台域名不证明作者身份，默认不自动成稿。"
+  },
+  {
+    "id": "arxiv-ai",
+    "name": "arXiv cs.AI 论文",
+    "url": "https://rss.arxiv.org/rss/cs.AI",
+    "kind": "paper",
+    "tier": "research",
+    "organization": "论文作者",
+    "allowed_hosts": [
+      "arxiv.org",
+      "rss.arxiv.org"
+    ],
+    "article_prefixes": [
+      "/abs/"
+    ],
+    "enabled": true,
+    "evidence_note": "论文分发平台不替作者背书；是否同行评审须另查，自动稿须注明。"
+  },
+  {
+    "id": "openai-news",
+    "name": "OpenAI 官方新闻",
+    "url": "https://openai.com/news/rss.xml",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "OpenAI",
+    "allowed_hosts": [
+      "openai.com",
+      "www.openai.com"
+    ],
+    "article_prefixes": [
+      "/index/"
+    ],
+    "enabled": true,
+    "evidence_note": "官方产品与研究公告；性能宣传仍须保留归属与评测条件。"
+  },
+  {
+    "id": "google-ai",
+    "name": "Google AI 官方博客",
+    "url": "https://blog.google/innovation-and-ai/technology/ai/rss/",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "Google",
+    "allowed_hosts": [
+      "blog.google"
+    ],
+    "article_prefixes": [
+      "/innovation-and-ai/"
+    ],
+    "enabled": true,
+    "evidence_note": "官方产品发布与应用消息；不能据此认定性能已经独立验证。"
+  },
+  {
+    "id": "anthropic-news",
+    "name": "Anthropic 官方新闻",
+    "url": "https://www.anthropic.com/news",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "Anthropic",
+    "allowed_hosts": [
+      "www.anthropic.com",
+      "anthropic.com"
+    ],
+    "article_prefixes": [
+      "/news/"
+    ],
+    "format": "news_html",
+    "enabled": true,
+    "evidence_note": "官方一手材料；不等于独立性能验证。"
+  },
+  {
+    "id": "aws-ml",
+    "name": "AWS Machine Learning",
+    "url": "https://aws.amazon.com/blogs/machine-learning/feed/",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "Amazon",
+    "allowed_hosts": [
+      "aws.amazon.com"
+    ],
+    "article_prefixes": [
+      "/blogs/machine-learning/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "官方一手材料；不等于独立性能验证。"
+  },
+  {
+    "id": "apple-ml",
+    "name": "Apple Machine Learning Research",
+    "url": "https://machinelearning.apple.com/rss.xml",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "Apple",
+    "allowed_hosts": [
+      "machinelearning.apple.com"
+    ],
+    "article_prefixes": [
+      "/research/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "官方一手材料；不等于独立性能验证。"
+  },
+  {
+    "id": "github-ai",
+    "name": "GitHub AI & ML",
+    "url": "https://github.blog/ai-and-ml/feed/",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "Microsoft",
+    "allowed_hosts": [
+      "github.blog"
+    ],
+    "article_prefixes": [
+      "/ai-and-ml/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "官方一手材料；不等于独立性能验证。"
+  },
+  {
+    "id": "arxiv-cl",
+    "name": "arXiv cs.CL 论文",
+    "url": "https://export.arxiv.org/rss/cs.CL",
+    "kind": "paper",
+    "tier": "research",
+    "organization": "论文作者",
+    "allowed_hosts": [
+      "export.arxiv.org",
+      "arxiv.org"
+    ],
+    "article_prefixes": [
+      "/abs/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "论文原始材料，同行评审状态需另查。"
+  },
+  {
+    "id": "techcrunch-ai",
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "TechCrunch",
+    "allowed_hosts": [
+      "techcrunch.com"
+    ],
+    "article_prefixes": [
+      "/20"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "编辑部二手报道；区分原创采访、引述公告和转载，不把刊载次数当作独立验证。"
+  },
+  {
+    "id": "ars-ai",
+    "name": "Ars Technica AI",
+    "url": "https://arstechnica.com/ai/feed/",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "Conde Nast",
+    "allowed_hosts": [
+      "arstechnica.com"
+    ],
+    "article_prefixes": [
+      "/ai/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "编辑部二手报道；区分原创采访、引述公告和转载，不把刊载次数当作独立验证。"
+  },
+  {
+    "id": "verge-ai",
+    "name": "The Verge AI",
+    "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "Vox Media",
+    "allowed_hosts": [
+      "www.theverge.com",
+      "theverge.com"
+    ],
+    "article_prefixes": [
+      "/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "编辑部二手报道；区分原创采访、引述公告和转载，不把刊载次数当作独立验证。"
+  },
+  {
+    "id": "deepseek-cn",
+    "name": "DeepSeek 官方新闻",
+    "url": "https://www.deepseek.com/en/news/",
+    "organization": "DeepSeek",
+    "allowed_hosts": [
+      "www.deepseek.com",
+      "deepseek.com"
+    ],
+    "article_prefixes": [
+      "/en/news/"
+    ],
+    "format": "article_index",
+    "tier": "primary",
+    "kind": "official",
+    "network": "direct",
+    "region": "CN",
+    "enabled": true,
+    "index_fetch_limit": 6,
+    "evidence_note": "厂商官方一手消息；性能数字保留具体归属、版本和测试条件。"
+  },
+  {
+    "id": "minimax-cn",
+    "name": "MiniMax 中国官方资讯",
+    "url": "https://www.minimax.cn/news",
+    "organization": "MiniMax",
+    "allowed_hosts": [
+      "www.minimax.cn",
+      "www.minimaxi.com"
+    ],
+    "article_prefixes": [
+      "/news/",
+      "/blog/"
+    ],
+    "format": "article_index",
+    "tier": "primary",
+    "kind": "official",
+    "network": "direct",
+    "region": "CN",
+    "enabled": true,
+    "index_fetch_limit": 6,
+    "evidence_note": "厂商官方一手消息；性能数字保留具体归属、版本和测试条件。"
+  },
+  {
+    "id": "qwen-official",
+    "name": "通义千问 Qwen 官方博客（历史 RSS）",
+    "url": "https://qwenlm.github.io/blog/index.xml",
+    "organization": "Alibaba Qwen",
+    "allowed_hosts": [
+      "qwenlm.github.io"
+    ],
+    "article_prefixes": [
+      "/blog/"
+    ],
+    "format": "rss",
+    "tier": "primary",
+    "kind": "official",
+    "network": "proxy",
+    "region": "CN",
+    "enabled": true,
+    "index_fetch_limit": 6,
+    "evidence_note": "官方旧订阅，更新可能滞后；按原始发布日期筛选，过期条目不进入当前新闻稿。"
+  },
+  {
+    "id": "mistral-news",
+    "name": "Mistral AI 官方新闻",
+    "url": "https://mistral.ai/news",
+    "organization": "Mistral AI",
+    "allowed_hosts": [
+      "mistral.ai"
+    ],
+    "article_prefixes": [
+      "/news/"
+    ],
+    "format": "article_index",
+    "tier": "primary",
+    "kind": "official",
+    "network": "proxy",
+    "region": "global",
+    "enabled": true,
+    "index_fetch_limit": 6,
+    "evidence_note": "厂商官方一手消息；性能数字保留具体归属、版本和测试条件。"
+  },
+  {
+    "id": "cohere-news",
+    "name": "Cohere 官方博客",
+    "url": "https://cohere.com/blog",
+    "organization": "Cohere",
+    "allowed_hosts": [
+      "cohere.com"
+    ],
+    "article_prefixes": [
+      "/blog/"
+    ],
+    "format": "article_index",
+    "tier": "primary",
+    "kind": "official",
+    "network": "proxy",
+    "region": "global",
+    "enabled": true,
+    "index_fetch_limit": 6,
+    "evidence_note": "厂商官方一手消息；性能数字保留具体归属、版本和测试条件。"
+  },
+  {
+    "id": "arena-benchmarks",
+    "name": "Arena 独立众测与研究",
+    "url": "https://arena.ai/blog",
+    "organization": "Arena",
+    "allowed_hosts": [
+      "arena.ai"
+    ],
+    "article_prefixes": [
+      "/blog/"
+    ],
+    "format": "article_index",
+    "tier": "secondary",
+    "kind": "benchmark",
+    "network": "proxy",
+    "region": "global",
+    "enabled": true,
+    "index_fetch_limit": 6,
+    "evidence_note": "测试机构的一手实测；记录测试日期、版本、样本与口径，不将局部测试外推为通用排名。"
+  },
+  {
+    "id": "aider-benchmarks",
+    "name": "Aider 编程实测",
+    "url": "https://aider.chat/feed.xml",
+    "organization": "Aider",
+    "allowed_hosts": [
+      "aider.chat"
+    ],
+    "article_prefixes": [
+      "/20",
+      "/202",
+      "/docs/",
+      "/"
+    ],
+    "format": "rss",
+    "tier": "secondary",
+    "kind": "benchmark",
+    "network": "proxy",
+    "region": "global",
+    "enabled": true,
+    "index_fetch_limit": 6,
+    "evidence_note": "测试机构的一手实测；记录测试日期、版本、样本与口径，不将局部测试外推为通用排名。"
+  },
+  {
+    "id": "xai-news",
+    "name": "xAI 官方新闻",
+    "url": "https://x.ai/news",
+    "organization": "xAI",
+    "allowed_hosts": [
+      "x.ai"
+    ],
+    "article_prefixes": [
+      "/news/"
+    ],
+    "format": "article_index",
+    "tier": "primary",
+    "kind": "official",
+    "network": "proxy",
+    "region": "global",
+    "enabled": false,
+    "index_fetch_limit": 6,
+    "evidence_note": "本机验证为403，默认停用；恢复可访问且日期可核对后再启用。"
+  },
+  {
+    "id": "nvidia-blog",
+    "name": "NVIDIA 官方博客",
+    "url": "https://blogs.nvidia.com/feed/",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "NVIDIA",
+    "allowed_hosts": [
+      "blogs.nvidia.com"
+    ],
+    "article_prefixes": [
+      "/blog/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "厂商自述，不等于独立性能验证。",
+    "include_keywords": [
+      "AI",
+      "artificial intelligence",
+      "agent",
+      "agents",
+      "nemotron",
+      "LLM",
+      "人工智能",
+      "大模型",
+      "智能体",
+      "DeepSeek",
+      "Claude",
+      "Gemini",
+      "Qwen"
+    ]
+  },
+  {
+    "id": "nvidia-newsroom",
+    "name": "NVIDIA 官方新闻室",
+    "url": "https://nvidianews.nvidia.com/releases.xml",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "NVIDIA",
+    "allowed_hosts": [
+      "nvidianews.nvidia.com",
+      "blogs.nvidia.com"
+    ],
+    "article_prefixes": [
+      "/news/",
+      "/releases/",
+      "/blog/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "厂商自述，不等于独立性能验证。",
+    "include_keywords": [
+      "AI",
+      "artificial intelligence",
+      "agent",
+      "agents",
+      "nemotron",
+      "LLM",
+      "人工智能",
+      "大模型",
+      "智能体",
+      "DeepSeek",
+      "Claude",
+      "Gemini",
+      "Qwen"
+    ]
+  },
+  {
+    "id": "meta-engineering",
+    "name": "Meta Engineering 官方博客",
+    "url": "https://engineering.fb.com/feed/",
+    "kind": "official",
+    "tier": "primary",
+    "organization": "Meta",
+    "allowed_hosts": [
+      "engineering.fb.com"
+    ],
+    "article_prefixes": [
+      "/20"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "厂商自述，不等于独立性能验证。",
+    "include_keywords": [
+      "AI",
+      "artificial intelligence",
+      "agent",
+      "agents",
+      "nemotron",
+      "LLM",
+      "人工智能",
+      "大模型",
+      "智能体",
+      "DeepSeek",
+      "Claude",
+      "Gemini",
+      "Qwen"
+    ]
+  },
+  {
+    "id": "the-decoder",
+    "name": "THE DECODER AI 专业媒体",
+    "url": "https://the-decoder.com/feed/",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "The Decoder",
+    "allowed_hosts": [
+      "the-decoder.com"
+    ],
+    "article_prefixes": [
+      "/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "专业媒体或作者报道，保留归因；转载和厂商宣称不当作独立实测。"
+  },
+  {
+    "id": "marktechpost",
+    "name": "MarkTechPost AI 专业媒体",
+    "url": "https://www.marktechpost.com/feed/",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "MarkTechPost",
+    "allowed_hosts": [
+      "www.marktechpost.com"
+    ],
+    "article_prefixes": [
+      "/20"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "专业媒体或作者报道，保留归因；转载和厂商宣称不当作独立实测。"
+  },
+  {
+    "id": "leiphone",
+    "name": "雷峰网 AI 与科技报道",
+    "url": "https://www.leiphone.com/feed",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "雷峰网",
+    "allowed_hosts": [
+      "www.leiphone.com"
+    ],
+    "article_prefixes": [
+      "/category/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "专业媒体或作者报道，保留归因；转载和厂商宣称不当作独立实测。",
+    "include_keywords": [
+      "AI",
+      "artificial intelligence",
+      "agent",
+      "agents",
+      "nemotron",
+      "LLM",
+      "人工智能",
+      "大模型",
+      "智能体",
+      "DeepSeek",
+      "Claude",
+      "Gemini",
+      "Qwen"
+    ],
+    "region": "CN",
+    "network": "direct"
+  },
+  {
+    "id": "interconnects",
+    "name": "Interconnects 独立模型研究",
+    "url": "https://www.interconnects.ai/feed",
+    "kind": "benchmark",
+    "tier": "secondary",
+    "organization": "Interconnects",
+    "allowed_hosts": [
+      "www.interconnects.ai"
+    ],
+    "article_prefixes": [
+      "/p/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "专业媒体或作者报道，保留归因；转载和厂商宣称不当作独立实测。"
+  },
+  {
+    "id": "latent-space",
+    "name": "Latent Space / AI News",
+    "url": "https://www.latent.space/feed",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "Latent Space",
+    "allowed_hosts": [
+      "www.latent.space"
+    ],
+    "article_prefixes": [
+      "/p/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "专业媒体或作者报道，保留归因；转载和厂商宣称不当作独立实测。"
+  },
+  {
+    "id": "ithome-ai",
+    "name": "IT之家 AI 关键词筛选",
+    "url": "https://www.ithome.com/rss/",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "IT之家",
+    "allowed_hosts": [
+      "www.ithome.com"
+    ],
+    "article_prefixes": [
+      "/0/",
+      "/1/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "专业媒体或作者报道，保留归因；转载和厂商宣称不当作独立实测。",
+    "include_keywords": [
+      "AI",
+      "artificial intelligence",
+      "agent",
+      "agents",
+      "nemotron",
+      "LLM",
+      "人工智能",
+      "大模型",
+      "智能体",
+      "DeepSeek",
+      "Claude",
+      "Gemini",
+      "Qwen"
+    ],
+    "region": "CN",
+    "network": "direct"
+  },
+  {
+    "id": "unite-ai",
+    "name": "Unite.AI 专业媒体",
+    "url": "https://www.unite.ai/feed/",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "Unite.AI",
+    "allowed_hosts": [
+      "www.unite.ai"
+    ],
+    "article_prefixes": [
+      "/"
+    ],
+    "format": "rss",
+    "enabled": true,
+    "evidence_note": "专业媒体或作者报道，保留归因；转载和厂商宣称不当作独立实测。"
+  },
+  {
+    "id": "venturebeat-ai",
+    "name": "VentureBeat AI（429 暂停）",
+    "url": "https://venturebeat.com/category/ai/feed/",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "VentureBeat AI",
+    "allowed_hosts": [
+      "venturebeat.com"
+    ],
+    "article_prefixes": [
+      "/"
+    ],
+    "format": "rss",
+    "enabled": false,
+    "evidence_note": "本机公开访问受限，登记供后续检查，未声称已经接通。"
+  },
+  {
+    "id": "qbitai",
+    "name": "量子位（403 暂停）",
+    "url": "https://www.qbitai.com/feed",
+    "kind": "media",
+    "tier": "secondary",
+    "organization": "量子位",
+    "allowed_hosts": [
+      "www.qbitai.com"
+    ],
+    "article_prefixes": [
+      "/20"
+    ],
+    "format": "rss",
+    "enabled": false,
+    "evidence_note": "本机公开访问受限，登记供后续检查，未声称已经接通。"
+  }
+]

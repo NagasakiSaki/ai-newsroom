@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "sources": ["baidu", "toutiao"],
+  "cache_minutes": 10,
+  "min_overlap": 2,
+  "boost_top10": 6,
+  "boost_any": 3,
+  "stale_hours": 6
+}

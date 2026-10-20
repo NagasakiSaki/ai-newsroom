@@ -1,0 +1,20 @@
+{
+  "news_max_age_hours": 24,
+  "official_max_age_hours": 72,
+  "paper_max_age_hours": 72,
+  "recheck_minutes": 5,
+  "page_feed_date_tolerance_hours": 24,
+  "community_auto_write": false,
+  "require_original_publication_time": true,
+  "crosscheck_max_age_hours": 72,
+  "crosscheck_max_sources": 4,
+  "crosscheck_candidate_limit": 12,
+  "require_corroboration": true,
+  "allow_primary_announcement_only": true,
+  "allow_trusted_media_only": true,
+  "research_candidates_per_source": 1,
+  "crosscheck_min_confidence": 0.85,
+  "max_feed_items": 400,
+  "max_candidates_per_source": 3,
+  "crosscheck_source_chars": 10000
+}
