@@ -353,10 +353,10 @@ class Engine(DraftWorkflow, CrossSource, SourceControl, ManualPublication, Publi
                 source_errors.append(message)
         try:
             self.controls.checkpoint()
-            rules = editorial()
+            rules = self.writing_rules()
             editor = (job.get('payload') or {}).get('editor') or choose_editor(self.store)
             if self.settings.editorial_mode == 'auto':
-                editor = {**editor, 'id': 'auto', 'name': '自动策划编辑部', 'style_name': '现代科技特写·整篇写作',
+                editor = {**editor, 'id': 'auto', 'name': '自动策划编辑部', 'style_name': '全领域信息·整篇写作',
                           'instructions': '按新闻自主选择标题、叙事结构和篇幅，整篇连贯写作，不设固定角色与新闻评论比例。',
                           'prompt_profile': 'prompt', 'writer_profile': 'writer', 'prompt_model': '', 'writer_model': ''}
             fmt = editor.get('format') or rules.get('default_format', 'news')
@@ -375,8 +375,7 @@ class Engine(DraftWorkflow, CrossSource, SourceControl, ManualPublication, Publi
             if recent_poll:
                 log('collect_cache', '复用五分钟内刚完成的信源采集；不重复等待全部新闻源')
             incoming = ([] if target or recent_poll else collect.demo_items() if self.settings.demo else
-                        collect.collect(sources(), rules["max_age_hours"], log, health=self.health_update, settings=self.settings,
-                                        checkpoint=self.controls.checkpoint, on_items=self.ingest))
+                        self.collect_catalog(rules["max_age_hours"], log, health=self.health_update))
             self.ingest(incoming)
             if incoming:
                 # 新线索入库后立刻刷新同事件候选组，排序与对照都依赖它。
@@ -393,7 +392,8 @@ class Engine(DraftWorkflow, CrossSource, SourceControl, ManualPublication, Publi
                 return (item['status'] == 'failed' and item.get('pipeline_failures', 0) < 3 and
                         (not item.get('retry_after') or datetime.fromisoformat(item['retry_after']) <= datetime.now(timezone.utc)))
             candidates = sorted([item for item in self.store.all("stories") if retry_ready(item) and item["demo"] == self.settings.demo
-                                 and item["id"] not in already_drafted and (item.get('demo') or item.get('source_report', {}).get('auto_eligible')) and datetime.fromisoformat(item["published_at"]) >= cutoff], key=lambda item: item["published_at"], reverse=True)
+                                 and item["id"] not in already_drafted and (item.get('demo') or item.get('source_report', {}).get('auto_eligible'))
+                                 and item.get('published_at') and datetime.fromisoformat(item["published_at"]) >= cutoff], key=lambda item: item["published_at"], reverse=True)
             if not target:
                 tier_order = {'primary': 3, 'secondary': 2, 'research': 1}
                 candidates.sort(key=lambda item: (tier_order.get(item.get('source_report', {}).get('tier'), 0), item['published_at']), reverse=True)

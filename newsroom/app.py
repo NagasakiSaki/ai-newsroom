@@ -2,8 +2,8 @@ import hmac
 from contextlib import asynccontextmanager
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi import FastAPI, HTTPException, Request, Query
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, Field
@@ -21,6 +21,8 @@ from .desktop_login import DesktopTickets, DesktopLoginRequest, DesktopLoginResp
 from .runtime_config import RuntimeConfigPatch, ModelTestResult, public_config, save_config, test_model
 from .publication import PublicationAction, PublishConfigPatch, CapabilityResult
 from .workflow_control import ControlRequest, UsagePreferences, usage_summary
+from .source_catalog import CollectionSettings, configuration as source_configuration, save as save_sources
+from . import library
 
 
 class RunRequest(WritingChoice):
@@ -76,7 +78,7 @@ def create_app(settings=None, start_worker=True):
         yield
         engine.close()
 
-    app = FastAPI(title="AI 新闻编辑台", lifespan=lifespan, docs_url=None, redoc_url=None)
+    app = FastAPI(title="信息工作台", version="0.2.0", lifespan=lifespan, docs_url=None, redoc_url=None)
     app.state.engine = engine
     (settings.data_dir / 'media').mkdir(exist_ok=True)
     app.mount('/media', StaticFiles(directory=settings.data_dir / 'media'), name='article-media')
@@ -106,7 +108,7 @@ def create_app(settings=None, start_worker=True):
     @app.exception_handler(RequestValidationError)
     async def validation_error(request, exc):
         # 配置请求可能带密钥；FastAPI 默认校验错误中的 input/context 不得回显。
-        if request.url.path.startswith('/api/config'):
+        if request.url.path.startswith(('/api/config', '/api/sources/settings')):
             return JSONResponse({'detail': [{'loc': error['loc'], 'type': error['type'], 'msg': error['msg']}
                                            for error in exc.errors()]}, status_code=422)
         from fastapi.exception_handlers import request_validation_exception_handler
@@ -146,7 +148,7 @@ def create_app(settings=None, start_worker=True):
         drafts = engine.store.all("drafts")
         all_stories = engine.store.all('stories')
         # 官方消息和编辑部报道先展示，避免论文批量更新挤掉所有新闻。
-        visible_stories = sorted(all_stories, key=lambda item: (bool(item.get('demo')), item.get('source_report', {}).get('tier') in {'primary', 'secondary'}, item.get('published_at', '')), reverse=True)[:500]
+        visible_stories = sorted(all_stories, key=lambda item: (bool(item.get('demo')), item.get('source_report', {}).get('tier') in {'primary', 'secondary'}, item.get('published_at') or item.get('collected_at', '')), reverse=True)[:500]
         publish = engine.publish_summary()
         return {"settings": {"demo": settings.demo, "delivery_mode": settings.delivery_mode, "manual_publication": True,
                             "publish_enabled": publish["config"]["enabled"], "publish_mode": publish["config"]["mode"],
@@ -159,13 +161,14 @@ def create_app(settings=None, start_worker=True):
                             'polish_pass': settings.polish_pass,
                             "llm_model": settings.llm_model, "review_model": settings.review_model or settings.llm_model,
                             "wechat_configured": bool(settings.wechat_app_id and settings.wechat_app_secret)},
-                "schedule": engine.get_schedule(), "editorial": editorial(), "sources": sources(), "drafts": drafts,
+                "schedule": engine.get_schedule(), "editorial": engine.writing_rules(), "sources": engine.source_catalog(), "drafts": drafts,
+                'collection_settings': source_configuration(engine.store).model_dump(),
                 'editors': engine.store.all('editors'), 'writing_default': engine.store.get('preferences', 'writing'),
                 'model_profiles': public_profiles(settings), 'source_health': engine.store.all('source_health'),
                 'source_policy': policy(), 'collection_interval_minutes': settings.collection_interval_minutes,
                 'event_candidates': engine.store.all('event_candidates'),
                 'story_total': len(all_stories),
-                "stories": [{k: v for k, v in story.items() if k not in {"text", "excerpt", 'feed_html', 'feed_text'}} for story in visible_stories],
+                "stories": [{k: v for k, v in story.items() if k not in {"text", "excerpt", 'feed_html', 'feed_text', 'crawl_html'}} for story in visible_stories],
                 "runs": engine.store.all("runs")[:30], "jobs": engine.store.all("jobs")[:100],
                 "events": engine.store.events(), "calls": engine.store.all("calls")[:100],
                 "publication": publish, "publications": [{**p, 'account_current': p.get('account') == settings.wechat_app_id}
@@ -198,6 +201,37 @@ def create_app(settings=None, start_worker=True):
     @app.post('/api/sources/check')
     def check_sources():
         return engine.enqueue('collect')
+
+    @app.get('/api/sources/settings', response_model=CollectionSettings)
+    def source_settings():
+        return source_configuration(engine.store)
+
+    @app.put('/api/sources/settings', response_model=CollectionSettings)
+    def update_source_settings(body: CollectionSettings):
+        with engine.lock:
+            if any(j['status'] in {'queued', 'running', 'paused'} and j['kind'] in engine.controls.kinds | {'illustrations'}
+                   for j in engine.store.all('jobs')):
+                raise ValueError('请先完成或取消采集／采编任务，再修改信源与关键词')
+            result = save_sources(engine.store, body)
+            engine.store.event('sources', 'source_settings', '已保存信源与关键词；未抓取网页或调用模型')
+            return result
+
+    @app.get('/api/library')
+    def information_library(q: str = Query(default='', max_length=1000), source_id: str = Query(default='', max_length=80),
+                            limit: int = Query(default=50, ge=1, le=200), offset: int = Query(default=0, ge=0)):
+        return library.query(engine.store, q, source_id, limit, offset)
+
+    @app.get('/api/library/export', responses={200: {'description': '本地资料导出，最多 5000 条；不调用模型或网络',
+                                                   'content': {'application/json': {}, 'text/csv': {'schema': {'type': 'string'}}}}})
+    def library_export(format: Literal['json', 'csv'] = 'json', q: str = Query(default='', max_length=1000),
+                       source_id: str = Query(default='', max_length=80)):
+        result = library.export(engine.store, format, q, source_id)
+        return Response(result, media_type='application/json' if format == 'json' else 'text/csv; charset=utf-8',
+                        headers={'Content-Disposition': 'attachment; filename="information.' + format + '"'})
+
+    @app.get('/api/library/{story_id}')
+    def library_detail(story_id: str):
+        return library.detail(engine.store, story_id)
 
     @app.get('/api/wechat/status', response_model=WechatConnectionStatus)
     def wechat_status():

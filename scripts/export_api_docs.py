@@ -21,6 +21,7 @@ from newsroom.desktop_login import DesktopLoginRequest, DesktopLoginResponse, De
 from newsroom.publication import CapabilityResult, PublicationAction, PublishConfigPatch
 from newsroom.runtime_config import RuntimeConfigPatch, ModelTestResult, ImageGenerationPatch
 from newsroom.workflow_control import ControlRequest, UsagePreferences
+from newsroom.source_catalog import CollectionSettings, CrawlSource
 
 
 def documents():
@@ -32,7 +33,7 @@ def documents():
               SchedulePlan, Article, Evidence, Angle, Score, Review, WritingPrompt, Crosscheck, EditorialPlan, VisualPlan, AutonomousPlan, ArticlePlan, ScoreBatch,
               WechatConnectionStatus, WechatTestResult, DesktopLoginRequest, DesktopLoginResponse, DesktopTicketResponse,
               RuntimeConfigPatch, ModelTestResult, PublishRequest, PublishConfigPatch, PublicationAction, CapabilityResult,
-              ControlRequest, UsagePreferences, BatchDraftRequest, PreparedArticle, ImageGenerationPatch]
+              ControlRequest, UsagePreferences, BatchDraftRequest, PreparedArticle, ImageGenerationPatch, CollectionSettings, CrawlSource]
     refs, domain = models_json_schema([(model, 'validation') for model in models], title='AI Newsroom request and model-output schemas')
     domain['$schema'] = 'https://json-schema.org/draft/2020-12/schema'
     domain['x-roots'] = {model.__name__: refs[(model, 'validation')] for model in models}

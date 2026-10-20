@@ -36,7 +36,7 @@ def near_copy(left, right):
 class CrossSource:
     def related_stories(self, anchor, pool=None, catalog=None, rules=None):
         rules = rules or policy()
-        catalog = catalog or sources()
+        catalog = self.source_catalog() if catalog is None else catalog
         def lookup(item):
             return next((s for s in catalog if s['id'] == item.get('source_id') or s['name'] == item.get('source')), None)
         anchor_source = lookup(anchor)
@@ -77,7 +77,7 @@ class CrossSource:
         return result
 
     def index_events(self):
-        pool, catalog, rules = self.store.all('stories'), sources(), policy()
+        pool, catalog, rules = self.store.all('stories'), self.source_catalog(), policy()
         for item in pool:
             if item.get('demo') or not as_date(item.get('published_at')) or datetime.now(timezone.utc) - as_date(item['published_at']) > timedelta(hours=72):
                 continue

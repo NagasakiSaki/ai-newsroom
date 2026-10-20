@@ -27,7 +27,7 @@ def as_date(value):
 def identity(source, url):
     parts = urlsplit(url)
     allowed = source.get("allowed_hosts") or [urlsplit(source["url"]).hostname]
-    if parts.scheme != "https" or parts.hostname not in allowed or parts.username or parts.password:
+    if parts.scheme not in ({'http', 'https'} if source.get('custom') else {'https'}) or parts.hostname not in allowed or parts.username or parts.password:
         raise ValueError("文章域名与已登记信源不一致")
     prefixes = source.get("article_prefixes", ["/"])
     if not any(parts.path.startswith(prefix) for prefix in prefixes):

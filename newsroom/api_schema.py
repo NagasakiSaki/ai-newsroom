@@ -8,7 +8,8 @@ def install_openapi(app):
             return app.openapi_schema
         result = get_openapi(title=app.title, version=app.version, routes=app.routes)
         result['info']['description'] = (
-            '本地单人 AI 新闻编辑台。除 health 和一次性票据兑换接口外，/api/* 使用 Bearer 审核台口令。'
+            '本地单人全领域信息工作台。自定义信源和关键词由内置爬虫采集，资料库搜索、阅读和导出不调用模型。'
+            '写作、生图及微信草稿为可选能力。除 health 和一次性票据兑换接口外，/api/* 使用 Bearer 审核台口令。'
             '任务入队返回 HTTP 200，不代表采编成功；通过 /api/state 轮询任务、运行、稿件与发布状态。'
             '桌面工作流止于建立微信草稿；一键批量提交所有未入库真实稿件，支持本地格式修正与明确失败的有限重试。'
             '历史 publish 路径保留兼容，桌面运行时固定仅存草稿；正式发表请在公众号后台完成。'

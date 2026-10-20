@@ -364,6 +364,81 @@
       "title": "CapabilityResult",
       "type": "object"
     },
+    "CollectionSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "topic": {
+          "default": "通用信息",
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Topic",
+          "type": "string"
+        },
+        "audience": {
+          "default": "关注该主题的读者",
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Audience",
+          "type": "string"
+        },
+        "writing_style": {
+          "default": "清楚、具体、信息充足，按主题选择结构，区分事实与评论。",
+          "maxLength": 2000,
+          "title": "Writing Style",
+          "type": "string"
+        },
+        "include_builtins": {
+          "default": true,
+          "title": "Include Builtins",
+          "type": "boolean"
+        },
+        "keywords": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Keywords",
+          "type": "array"
+        },
+        "exclude_keywords": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Exclude Keywords",
+          "type": "array"
+        },
+        "keyword_mode": {
+          "default": "any",
+          "pattern": "^(any|all)$",
+          "title": "Keyword Mode",
+          "type": "string"
+        },
+        "max_age_hours": {
+          "default": 0,
+          "maximum": 87600,
+          "minimum": 0,
+          "title": "Max Age Hours",
+          "type": "integer"
+        },
+        "custom_sources": {
+          "items": {
+            "$ref": "#/$defs/CrawlSource"
+          },
+          "maxItems": 100,
+          "title": "Custom Sources",
+          "type": "array"
+        }
+      },
+      "title": "CollectionSettings",
+      "type": "object"
+    },
     "ComposeRequest": {
       "additionalProperties": false,
       "properties": {
@@ -465,6 +540,99 @@
         "action"
       ],
       "title": "ControlRequest",
+      "type": "object"
+    },
+    "CrawlSource": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^custom-[a-z0-9-]{1,60}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 2000,
+          "minLength": 8,
+          "title": "Url",
+          "type": "string"
+        },
+        "mode": {
+          "default": "auto",
+          "pattern": "^(auto|rss|html|article|sitemap)$",
+          "title": "Mode",
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "max_pages": {
+          "default": 8,
+          "maximum": 30,
+          "minimum": 1,
+          "title": "Max Pages",
+          "type": "integer"
+        },
+        "max_depth": {
+          "default": 1,
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Max Depth",
+          "type": "integer"
+        },
+        "delay_seconds": {
+          "default": 1,
+          "maximum": 30,
+          "minimum": 0.2,
+          "title": "Delay Seconds",
+          "type": "number"
+        },
+        "article_selector": {
+          "default": "",
+          "maxLength": 300,
+          "title": "Article Selector",
+          "type": "string"
+        },
+        "content_selector": {
+          "default": "",
+          "maxLength": 300,
+          "title": "Content Selector",
+          "type": "string"
+        },
+        "extra_hosts": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "title": "Extra Hosts",
+          "type": "array"
+        },
+        "include_keywords": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Include Keywords",
+          "type": "array"
+        },
+        "allow_writing": {
+          "default": false,
+          "title": "Allow Writing",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "url"
+      ],
+      "title": "CrawlSource",
       "type": "object"
     },
     "Crosscheck": {
@@ -2230,6 +2398,12 @@
     },
     "ImageGenerationPatch": {
       "$ref": "#/$defs/ImageGenerationPatch"
+    },
+    "CollectionSettings": {
+      "$ref": "#/$defs/CollectionSettings"
+    },
+    "CrawlSource": {
+      "$ref": "#/$defs/CrawlSource"
     }
   }
 }

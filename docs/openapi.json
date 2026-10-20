@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "AI 新闻编辑台",
-    "version": "0.1.0",
-    "description": "本地单人 AI 新闻编辑台。除 health 和一次性票据兑换接口外，/api/* 使用 Bearer 审核台口令。任务入队返回 HTTP 200，不代表采编成功；通过 /api/state 轮询任务、运行、稿件与发布状态。桌面工作流止于建立微信草稿；一键批量提交所有未入库真实稿件，支持本地格式修正与明确失败的有限重试。历史 publish 路径保留兼容，桌面运行时固定仅存草稿；正式发表请在公众号后台完成。发布记录区分准备、草稿已建、已受理、处理中、成功、明确失败与结果待核对，超时不会自动重提。"
+    "title": "信息工作台",
+    "version": "0.2.0",
+    "description": "本地单人全领域信息工作台。自定义信源和关键词由内置爬虫采集，资料库搜索、阅读和导出不调用模型。写作、生图及微信草稿为可选能力。除 health 和一次性票据兑换接口外，/api/* 使用 Bearer 审核台口令。任务入队返回 HTTP 200，不代表采编成功；通过 /api/state 轮询任务、运行、稿件与发布状态。桌面工作流止于建立微信草稿；一键批量提交所有未入库真实稿件，支持本地格式修正与明确失败的有限重试。历史 publish 路径保留兼容，桌面运行时固定仅存草稿；正式发表请在公众号后台完成。发布记录区分准备、草稿已建、已受理、处理中、成功、明确失败与结果待核对，超时不会自动重提。"
   },
   "paths": {
     "/api/health": {
@@ -329,6 +329,264 @@
             "content": {
               "application/json": {
                 "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ]
+      }
+    },
+    "/api/sources/settings": {
+      "get": {
+        "summary": "Source Settings",
+        "operationId": "source_settings_api_sources_settings_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionSettings"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update Source Settings",
+        "operationId": "update_source_settings_api_sources_settings_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionSettings"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ]
+      }
+    },
+    "/api/library": {
+      "get": {
+        "summary": "Information Library",
+        "operationId": "information_library_api_library_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 1000,
+              "default": "",
+              "title": "Q"
+            }
+          },
+          {
+            "name": "source_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 80,
+              "default": "",
+              "title": "Source Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ]
+      }
+    },
+    "/api/library/export": {
+      "get": {
+        "summary": "Library Export",
+        "operationId": "library_export_api_library_export_get",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "json",
+                "csv"
+              ],
+              "type": "string",
+              "default": "json",
+              "title": "Format"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 1000,
+              "default": "",
+              "title": "Q"
+            }
+          },
+          {
+            "name": "source_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 80,
+              "default": "",
+              "title": "Source Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "本地资料导出，最多 5000 条；不调用模型或网络",
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ]
+      }
+    },
+    "/api/library/{story_id}": {
+      "get": {
+        "summary": "Library Detail",
+        "operationId": "library_detail_api_library__story_id__get",
+        "parameters": [
+          {
+            "name": "story_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Story Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
               }
             }
           }
@@ -1684,6 +1942,81 @@
         ],
         "title": "CapabilityResult"
       },
+      "CollectionSettings": {
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Revision",
+            "default": 0
+          },
+          "topic": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Topic",
+            "default": "通用信息"
+          },
+          "audience": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Audience",
+            "default": "关注该主题的读者"
+          },
+          "writing_style": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Writing Style",
+            "default": "清楚、具体、信息充足，按主题选择结构，区分事实与评论。"
+          },
+          "include_builtins": {
+            "type": "boolean",
+            "title": "Include Builtins",
+            "default": true
+          },
+          "keywords": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Keywords"
+          },
+          "exclude_keywords": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Exclude Keywords"
+          },
+          "keyword_mode": {
+            "type": "string",
+            "pattern": "^(any|all)$",
+            "title": "Keyword Mode",
+            "default": "any"
+          },
+          "max_age_hours": {
+            "type": "integer",
+            "maximum": 87600.0,
+            "minimum": 0.0,
+            "title": "Max Age Hours",
+            "default": 0
+          },
+          "custom_sources": {
+            "items": {
+              "$ref": "#/components/schemas/CrawlSource"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Custom Sources"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CollectionSettings"
+      },
       "ComposeRequest": {
         "properties": {
           "editor_id": {
@@ -1781,6 +2114,99 @@
           "action"
         ],
         "title": "ControlRequest"
+      },
+      "CrawlSource": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^custom-[a-z0-9-]{1,60}$",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 8,
+            "title": "Url"
+          },
+          "mode": {
+            "type": "string",
+            "pattern": "^(auto|rss|html|article|sitemap)$",
+            "title": "Mode",
+            "default": "auto"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": true
+          },
+          "max_pages": {
+            "type": "integer",
+            "maximum": 30.0,
+            "minimum": 1.0,
+            "title": "Max Pages",
+            "default": 8
+          },
+          "max_depth": {
+            "type": "integer",
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Max Depth",
+            "default": 1
+          },
+          "delay_seconds": {
+            "type": "number",
+            "maximum": 30.0,
+            "minimum": 0.2,
+            "title": "Delay Seconds",
+            "default": 1
+          },
+          "article_selector": {
+            "type": "string",
+            "maxLength": 300,
+            "title": "Article Selector",
+            "default": ""
+          },
+          "content_selector": {
+            "type": "string",
+            "maxLength": 300,
+            "title": "Content Selector",
+            "default": ""
+          },
+          "extra_hosts": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Extra Hosts"
+          },
+          "include_keywords": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Include Keywords"
+          },
+          "allow_writing": {
+            "type": "boolean",
+            "title": "Allow Writing",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "url"
+        ],
+        "title": "CrawlSource"
       },
       "DecisionRequest": {
         "properties": {

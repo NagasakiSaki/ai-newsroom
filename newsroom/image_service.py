@@ -14,7 +14,7 @@ from .network import options
 from .image_protocol import image_request, image_result
 
 
-SAFETY = ('Conceptual editorial illustration for a modern Chinese technology feature. '
+SAFETY = ('Conceptual editorial illustration for a modern Chinese long-form feature about the supplied topic. '
           'No text, logos, charts, numbers, watermarks, identifiable real people, or depiction of a real reported event as a photograph; '
           'no fake product screenshots, benchmark charts or test scenes. '
           'Strong central subject, cinematic lighting, clean composition, usable as a wide cover crop.')

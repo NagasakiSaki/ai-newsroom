@@ -24,9 +24,9 @@ def short_title(draft, limit=32):
             return cleaned
     # Cutting a long headline can remove a negation or availability condition. Use a neutral fallback instead.
     entity = re.search(r'\b[A-Za-z][A-Za-z0-9.-]{1,14}\b', current)
-    lead = entity.group(0) if entity else 'AI'
+    lead = entity.group(0) if entity else '信息'
     neutral = lead + '新消息：关键变化与影响'
-    return neutral if len(neutral) <= limit else 'AI新消息：关键变化与影响'
+    return neutral if len(neutral) <= limit else '新消息：关键变化与影响'
 
 
 def compact_html(value):

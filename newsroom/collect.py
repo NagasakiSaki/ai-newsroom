@@ -74,24 +74,25 @@ def canonical(url):
     return urlunsplit((parts.scheme.lower(), parts.netloc.lower(), parts.path.rstrip("/") or "/", urlencode(sorted(query)), ""))
 
 
-def public_url(url, curated=False, settings=None, proxy_active=None):
+def public_url(url, curated=False, settings=None, proxy_active=None, trusted_hosts=None):
     original_path = urlsplit(url).path
     url = canonical(url)
     if original_path.endswith('/') and original_path != '/':
         parts = urlsplit(url)
         url = urlunsplit((parts.scheme, parts.netloc, parts.path + '/', parts.query, ''))
     parts = urlsplit(url)
+    trusted = parts.hostname in CURATED_HOSTS or parts.hostname in (trusted_hosts or ())
     if parts.port not in {None, 80, 443}:
         raise ValueError("新闻采集只允许 80/443 端口")
     if proxy_active is None:
         proxy_active = bool(options(settings, 'news').get('proxy'))
-    if curated and parts.scheme == 'https' and parts.hostname in CURATED_HOSTS and proxy_active:
+    if curated and parts.scheme == 'https' and trusted and proxy_active:
         # 显式代理可在远端解析域名；固定信源先通过同一路由校验真实公网 DNS，避免本地 DNS 污染阻断。
         verify_public_dns(parts.hostname, settings=settings, proxy_active=True)
         return url
     addresses = socket.getaddrinfo(parts.hostname, parts.port or 443, type=socket.SOCK_STREAM)
     ips = [ipaddress.ip_address(a[4][0]) for a in addresses]
-    if curated and parts.scheme == "https" and parts.hostname in CURATED_HOSTS and ips and all(ip in FAKE_IP or ip in FAKE_IP6 or ip.is_global for ip in ips):
+    if curated and parts.scheme == "https" and trusted and ips and all(ip in FAKE_IP or ip in FAKE_IP6 or ip.is_global for ip in ips):
         if any(ip in FAKE_IP or ip in FAKE_IP6 for ip in ips):
             # 只在带 settings 且回退直连时传 proxy_active，保持既有调用形状。
             if settings is None:
@@ -106,13 +107,16 @@ def public_url(url, curated=False, settings=None, proxy_active=None):
     return url
 
 
-def _fetch_document(url, limit, allowed_hosts, settings, client_options, proxy_active):
+def _fetch_document(url, limit, allowed_hosts, settings, client_options, proxy_active, redirect_guard=None):
     # 每次跳转重新检查；不携带任何模型/微信凭证。
     with httpx.Client(timeout=20, **client_options, headers={"User-Agent": "AINewsroom/0.1 (+RSS reader)"}) as client:
-        for _ in range(5):
-            url = public_url(url, curated=bool(allowed_hosts), settings=settings, proxy_active=proxy_active)
+        for step in range(5):
+            kwargs = {'trusted_hosts': allowed_hosts} if allowed_hosts and urlsplit(url).hostname not in CURATED_HOSTS else {}
+            url = public_url(url, curated=bool(allowed_hosts), settings=settings, proxy_active=proxy_active, **kwargs)
             if allowed_hosts and urlsplit(url).hostname not in allowed_hosts:
                 raise ValueError("信源跳转到了未允许的域名")
+            if step and redirect_guard:
+                redirect_guard(url)
             with client.stream("GET", url) as response:
                 if response.is_redirect:
                     url = urljoin(url, response.headers["location"])
@@ -128,16 +132,16 @@ def _fetch_document(url, limit, allowed_hosts, settings, client_options, proxy_a
     raise ValueError("新闻页面跳转过多")
 
 
-def fetch_document(url, limit=2_000_000, allowed_hosts=None, settings=None):
+def fetch_document(url, limit=2_000_000, allowed_hosts=None, settings=None, redirect_guard=None):
     """显式代理不可用时自动回退直连；回退只影响本次采集，不修改页面配置。"""
     client_options = options(settings, 'news')
     try:
-        return _fetch_document(url, limit, allowed_hosts, settings, client_options, bool(client_options.get('proxy')))
+        return _fetch_document(url, limit, allowed_hosts, settings, client_options, bool(client_options.get('proxy')), redirect_guard)
     except (httpx.ProxyError, httpx.ConnectError):
         if not client_options.get('proxy'):
             raise
         direct = {key: value for key, value in client_options.items() if key != 'proxy'}
-        result = _fetch_document(url, limit, allowed_hosts, settings, direct, False)
+        result = _fetch_document(url, limit, allowed_hosts, settings, direct, False, redirect_guard)
         result['proxy_fallback'] = True
         ROUTE['proxy_fallback'] += 1
         ROUTE_LOCAL.proxy_fallback = getattr(ROUTE_LOCAL, 'proxy_fallback', 0) + 1

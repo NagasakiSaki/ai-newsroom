@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.0 — 2026-10-20
+
+- General topic/audience/style configuration and optional legacy AI feed bundle.
+- Persisted source URLs, selectors, explicit additional hosts, include/exclude keywords and any/all matching.
+- Built-in RSS/Atom, HTML, article and XML sitemap crawler with public-address/redirect checks, robots rules, rate limits and collection checkpoints.
+- Model-free local text library, source/query filters and JSON/CSV exports with formula escaping.
+- Undated reference material retained without invented publication times; optional news writing keeps its own qualification.
+- Library-first UI and separate collection/writing buttons. User settings and fetched bodies stay in ignored data/.
+- Isolated browser checks covered configuration, source add/save, keyword search and saved-body reading. Python.org live capture yielded about 2,400 characters with zero model calls. Real model/WeChat services were not used.
+
+Validation: complete Windows regression run 369 passed; final focused crawler/API checks cover the subsequent redirect-delay and keyword-URL fixes. OpenAPI consistency, JavaScript syntax, source/archive credential checks and documentation links also verified. Linux CI is not claimed.
+
+
 ## 0.1.0 — 2026-10-20
 
 Initial experimental open-source snapshot:

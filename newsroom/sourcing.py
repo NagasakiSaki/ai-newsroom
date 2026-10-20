@@ -9,10 +9,51 @@ from .models import content_hash
 
 
 class SourceControl:
+    def source_catalog(self):
+        from .source_catalog import catalog
+        return catalog(self.store)
+
+    def collection_settings(self):
+        from .source_catalog import configuration
+        return configuration(self.store)
+
+    def writing_rules(self):
+        from .source_catalog import writing_rules
+        return writing_rules(self.store)
+
+    def collect_catalog(self, max_age, log, health=None):
+        from .source_catalog import matches
+        from .crawler import crawl_source
+        config = self.collection_settings()
+        catalog = self.source_catalog()
+        def accepted(batch):
+            return [item for item in batch if matches(item['title'] + ' ' + item.get('feed_text', '') + ' ' + item.get('excerpt', ''), config)
+                    and (not config.max_age_hours or as_date(item.get('published_at')) and
+                         datetime.now(timezone.utc) - as_date(item['published_at']) <= timedelta(hours=config.max_age_hours))]
+        incoming = collect.collect([s for s in catalog if not s.get('custom')], max_age, log, health=health,
+            settings=self.settings, checkpoint=self.controls.checkpoint, on_items=lambda batch: self.ingest(accepted(batch)))
+        incoming = accepted(incoming)
+        for source in catalog:
+            if not source.get('custom') or not source.get('enabled', True):
+                continue
+            self.controls.checkpoint()
+            batch, report = crawl_source(source, config, self.settings, self.controls.checkpoint,
+                                         on_item=lambda item: self.ingest([item]))
+            incoming.extend(batch)
+            if health:
+                health(report)
+            log('source_error' if report['status'] == 'error' else 'collect',
+                source['name'] + '：内置爬虫保存 ' + str(len(batch)) + ' 条；检查 ' + str(report['pages_fetched']) + ' 页；未调用模型')
+        return incoming
+
     def recent_collection(self):
         """几分钟内刚采集过时复用线索池，避免点击写稿又串行重抓全部信源。"""
         for run in self.store.all('runs'):
             if run.get('kind') != 'collection' or run.get('status') not in {'done', 'partial'}:
+                continue
+            from .source_catalog import fingerprint
+            config = self.collection_settings()
+            if run.get('collection_fingerprint') != fingerprint(config) and (config.revision or run.get('collection_fingerprint')):
                 continue
             finished = as_date(run.get('finished_at'))
             if finished and timedelta(0) <= datetime.now(timezone.utc) - finished < timedelta(minutes=5):
@@ -20,7 +61,7 @@ class SourceControl:
         return None
 
     def source_for(self, item):
-        source = next((s for s in sources() if s['id'] == item.get('source_id') or s['name'] == item.get('source')), None)
+        source = next((s for s in self.source_catalog() if s['id'] == item.get('source_id') or s['name'] == item.get('source')), None)
         if not source:
             raise ValueError('信源未登记，不能自动撰稿')
         return source
@@ -30,7 +71,7 @@ class SourceControl:
             previous = self.store.get('source_health', report['id'])
         except KeyError:
             previous = {}
-        self.store.put('source_health', {**previous, **report, 'consecutive_errors': 0 if report['status'] == 'ok' else previous.get('consecutive_errors', 0) + 1})
+        self.store.put('source_health', {**previous, **report, 'consecutive_errors': 0 if report['status'] in {'ok', 'partial'} else previous.get('consecutive_errors', 0) + 1})
 
     def ingest(self, incoming):
         existing = {s['id']: s for s in self.store.all('stories')}
@@ -41,9 +82,16 @@ class SourceControl:
                 old.update(last_seen_at=now(), updated_at=item.get('updated_at'), source_id=item.get('source_id', old.get('source_id')))
                 if item.get('feed_text'):
                     old.update({key: item[key] for key in ('feed_html', 'feed_text', 'feed_snapshot')})
+                if item.get('custom_source'):
+                    old.update({key: item[key] for key in ('title', 'source', 'custom_source', 'text', 'excerpt', 'crawl_html', 'crawl_snapshot', 'source_report')})
+                    if not old.get('published_at') and item.get('published_at'):
+                        old.update(published_at=item['published_at'], date_basis=item['date_basis'], date_precision=item['date_precision'])
                 self.store.put('stories', old)
             else:
-                duplicate = next((s for s in existing.values() if s.get('demo') == item.get('demo') and abs((as_date(s.get('published_at')) - as_date(item.get('published_at'))).total_seconds()) < 72 * 3600 and collect.similar(s['title'], item['title'])), None)
+                duplicate = next((s for s in existing.values() if s.get('demo') == item.get('demo')
+                    and as_date(s.get('published_at')) and as_date(item.get('published_at'))
+                    and abs((as_date(s['published_at']) - as_date(item['published_at'])).total_seconds()) < 72 * 3600
+                    and collect.similar(s['title'], item['title'])), None)
                 if duplicate:
                     item.update(status='duplicate', duplicate_of=duplicate['id'])
                 self.store.put('stories', item)
@@ -51,7 +99,9 @@ class SourceControl:
 
     def collect_sources(self, job=None):
         run = self.new_run('collection', job=job)
-        run.update(stage='collect', progress=5, message='正在刷新真实 RSS 信源，不调用大模型')
+        from .source_catalog import fingerprint
+        run.update(stage='collect', progress=5, message='正在采集登记网址与订阅，不调用模型',
+                   collection_fingerprint=fingerprint(self.collection_settings()))
         self.store.put('runs', run)
         errors = []
         reports = []
@@ -63,13 +113,12 @@ class SourceControl:
             if stage == 'source_error':
                 errors.append(message)
         try:
-            incoming = collect.collect(sources(), policy()['paper_max_age_hours'], log, health=update_health, settings=self.settings,
-                                       checkpoint=self.controls.checkpoint, on_items=self.ingest)
+            incoming = self.collect_catalog(policy()['paper_max_age_hours'], log, health=update_health)
             self.ingest(incoming)
             self.index_events()
-            status = 'failed' if reports and all(r['status'] == 'error' for r in reports) else 'partial' if errors else 'done'
+            status = 'failed' if reports and all(r['status'] == 'error' for r in reports) else 'partial' if errors or any(r['status'] == 'partial' for r in reports) else 'done'
             self.finish_run(run, status, collected=len(incoming), source_failures=len(errors), progress=100, stage='finished',
-                            message=f'信源采集结束：发现 {len(incoming)} 条时效内线索；{len(errors)} 个来源失败；未调用模型')
+                            message=f'信源采集结束：保存 {len(incoming)} 条信息；{len(errors)} 个来源失败；未调用模型')
         except Exception:
             self.finish_run(run, 'failed')
             raise
@@ -97,10 +146,21 @@ class SourceControl:
         identity(source, item['url'])
         method = 'article_page'
         try:
-            document = collect.fetch_source(source, item['url'], settings=self.settings, document=True)
+            cached = item.get('crawl_snapshot') or {}
+            checked = as_date(cached.get('checked_at'))
+            if source.get('custom') and checked and datetime.now(timezone.utc) - checked < timedelta(hours=24) and item.get('crawl_html'):
+                document = {'html': item['crawl_html'], 'url': cached['url']}
+                method = 'crawler_snapshot'
+            else:
+                document = collect.fetch_source(source, item['url'], settings=self.settings, document=True)
             if document.get('route_fallback'):
                 self.store.event(item['id'], 'source_route', '新闻原文直连失败，使用已配置新闻代理重试；微信路由不变')
-            text = collect.plain(document['html'])[:24000]
+            if source.get('custom'):
+                from .crawler import extract
+                parsed = extract(document['html'], document['url'], source)
+                text = parsed['text'] if parsed else ''
+            else:
+                text = collect.plain(document['html'])[:24000]
             if len(text) < 120:
                 raise ValueError('页面正文过短')
         except (httpx.HTTPError, ValueError) as exc:

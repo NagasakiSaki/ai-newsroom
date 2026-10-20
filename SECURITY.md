@@ -22,3 +22,11 @@ Pause/cancel is cooperative and does not refund already-sent requests. The separ
 For a suspected vulnerability, use GitHub private vulnerability reporting if enabled, or open an issue requesting a private contact without exploit details or credentials. Do not attach real databases, .env, runtime settings, tokens or account screenshots. If credentials are exposed, revoke/rotate them with the provider; deleting a Git commit alone does not revoke a key.
 
 Run `python scripts/check_secrets.py` before committing. Pattern checks are an additional safeguard, not a guarantee that all private information is detected.
+
+## Custom collection
+
+Source settings and crawled text stay in ignored data/. Saving does not fetch. URLs reject embedded credentials, common key/token/signature parameters, private literals and nonstandard ports; request-time DNS and redirect checks still apply. Extra article hosts must be explicit.
+
+The custom crawler honors robots restrictions and bounded delays; unreachable robots stop that source. It executes no scripts, sends no provider credentials, and does not solve access challenges. Library bodies render as text, not raw HTML. Unknown publication dates remain null and are distinct from collection times.
+
+Exports can include third-party text and user queries. Inspect them before sharing; formula-like CSV fields are escaped. Source-setting validation errors omit submitted values.

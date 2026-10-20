@@ -6,6 +6,18 @@ FastAPI＋uvicorn 提供本机 HTTP API 与静态 HTML/CSS/JavaScript。后台 E
 
 launcher.py 准备环境、启动后台并签发短期一次性登录票据。管理员 Bearer 与模型 Key 是不同凭据。前端无需编译；修改 Python 后需重启，修改静态文件后刷新。
 
+## 无模型采集与资料库
+
+source_catalog.py 定义 CollectionSettings／CrawlSource，存于 source_settings/main，不改公开来源配置。保存带 revision 和活跃任务校验；内置 AI 包可关闭。
+
+crawler.py 复用安全 HTTP fetcher、BeautifulSoup、feedparser、标准库 XML／robots 解析，读取 RSS、HTML、文章和站点地图，无模型／搜索 SDK。每轮受页数、深度、主机、大小、robots 与间隔限制。自定义代理／TUN 主机仍需独立公网 DNS 检查。
+
+SourceControl.collect_catalog 合并内置包与自定义来源，在受控 collect 或 pipeline 中逐条入库。取消保留已存资料；未知日期可为 null，去重与排序能处理，不冒充新新闻。
+
+library.py 本地查询标题／正文，提供 JSON／CSV 导出，无模型或原站请求。collection.js 默认打开资料库，主按钮采集、另设可选写作；只用 textContent 显示原文，不注入 crawl_html。正文最多 24,000 字符。
+
+writing_rules 把主题、受众、文风传入可选模型。自定义源默认 allow_writing=false；允许后仍检查新闻时间与引用。source_settings 是数据记录，不是新的静态配置文件。
+
 ## 采编流程
 
 ```text
@@ -44,7 +56,7 @@ Review 关闭不代表取消 crosscheck。引用校验和 schema 通过不保证
 
 ## 数据与缓存
 
-SQLite 表 records(collection,id,data JSON) 保存 stories、drafts、runs、jobs、calls、image_calls、model_artifacts、publications、draft_batches、source_health、preferences 和 schedule 等；events 保存过程事件。
+SQLite 表 records(collection,id,data JSON) 保存 stories、drafts、runs、jobs、calls、image_calls、model_artifacts、publications、draft_batches、source_health、source_settings、preferences 和 schedule 等；events 保存过程事件。
 
 Store.all 按插入 rowid 倒序，更新不会自动移到前面；诊断按显式时间排序。文字 usage 与生图次数分开计算。run.timings 是阶段最近一次进入时距本轮起点的秒数，不能当作分段累计时长。
 

@@ -2,6 +2,48 @@
 
 Base URL：`http://127.0.0.1:8088`。完整机器契约：[OpenAPI](openapi.json)、[请求与领域 schema](schemas/domain-models.json)。以下示例只使用占位符，不含真实账号。
 
+## 无模型来源设置与资料库（v0.2.0）
+
+| 方法 | 路径 | 内容 |
+|---|---|---|
+| GET | /api/sources/settings | CollectionSettings：revision、topic、audience、writing_style、include_builtins、keywords、exclude_keywords、keyword_mode、max_age_hours、custom_sources |
+| PUT | /api/sources/settings | 完整替换；revision 防覆盖，活跃采集／采编任务时 409；保存不抓网页 |
+| POST | /api/sources/check | 启用来源的采集入队，与写作 demo 模式独立，不调用模型 |
+| GET | /api/library | q、source_id、limit（1–200，默认 50）、offset，返回 total/items；q 空格分词需全部命中 |
+| GET | /api/library/{story_id} | 已保存正文、时间和出处，不请求原站，不返回原始 crawl_html |
+| GET | /api/library/export | format=json/csv，可传 q/source_id，最多 5000 条；CSV 防公式注入 |
+
+CrawlSource 包含 id（custom- 前缀，缺省生成）、name、url、mode（auto/rss/html/article/sitemap）、enabled、max_pages（1–30）、max_depth（0–2）、delay_seconds（0.2–30）、article_selector、content_selector、extra_hosts（最多十个确切域名）、include_keywords、allow_writing。
+
+```json
+{
+  "revision": 0,
+  "topic": "公共教育",
+  "audience": "社区读者",
+  "include_builtins": false,
+  "keywords": ["图书馆", "教育"],
+  "exclude_keywords": ["广告"],
+  "keyword_mode": "any",
+  "max_age_hours": 0,
+  "custom_sources": [{
+    "name": "示例公告",
+    "url": "https://publisher.example/notices/",
+    "mode": "html",
+    "max_pages": 8,
+    "article_selector": ".notice-list a",
+    "content_selector": ".article-body",
+    "extra_hosts": ["www.publisher.example"],
+    "allow_writing": false
+  }]
+}
+```
+
+示例域名是占位符。先 GET 再提交相同 revision；保存后版本递增。URL 拒绝认证信息、常见密钥／签名参数、私网地址或非常规端口；请求继续验证 DNS 与每次跳转。关键词是登记站点过滤，不提供全网搜索。
+
+max_age_hours=0 表示自定义爬虫不按时间过滤；未知日期 date_basis=unknown、published_at=null。内置包仍用既有新闻窗口；允许写作不等于来源权威认证，也不绕过新闻时间门槛。正文最多 24,000 字符。
+
+GET /api/state 新增 collection_settings，sources 返回内置包选择及自定义来源，editorial 使用当前主题／受众／文风。线索列表不返回原始 crawl_html。
+
 ## 鉴权与状态
 
 除健康检查和一次性票据兑换外，/api/* 使用：
